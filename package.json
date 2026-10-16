@@ -1,0 +1,21 @@
+{
+  "name": "yunyi-flight-simulator",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "离线单机模拟飞行游戏",
+  "scripts": {
+    "build": "esbuild src/main.js --bundle --minify --outfile=dist/game.js",
+    "build:dev": "esbuild src/main.js --bundle --sourcemap --outfile=dist/game.js",
+    "test": "node --test test/*.test.js",
+    "test:browser": "node test/browser-smoke.js",
+    "test:all": "npm test && npm run build && npm run test:browser"
+  },
+  "dependencies": {
+    "three": "^0.180.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.10",
+    "playwright-core": "^1.64.1"
+  }
+}

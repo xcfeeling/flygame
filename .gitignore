@@ -1,0 +1,8 @@
+node_modules/
+dist/*.map
+npm-debug.log*
+yarn-error.log*
+.vscode/
+.idea/
+*.tmp
+*.bak

@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#06101b">
+  <meta name="color-scheme" content="dark">
+  <title>云岭航线 · 离线模拟飞行</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="src/style.css">
+  <script defer src="dist/game.js"></script>
+</head>
+<body>
+  <div id="game" role="application" aria-label="云岭航线三维飞行场景"></div>
+
+  <div id="ui">
+    <section id="loading-screen" class="screen loading-screen" data-screen="loading" aria-label="正在加载">
+      <div class="loading-card">
+        <div class="brand-mark brand-mark-large" aria-hidden="true"><span></span><i></i></div>
+        <p class="eyebrow">YUNLING FLIGHT SIMULATION</p>
+        <h1>云岭航线</h1>
+        <p class="loading-status" id="loading-status">正在初始化飞行系统</p>
+        <div class="loading-track" aria-hidden="true"><span></span></div>
+        <p class="loading-note">离线运行 · 无需网络连接</p>
+      </div>
+    </section>
+
+    <section id="title-screen" class="screen title-screen" data-screen="title" aria-labelledby="game-title" hidden>
+      <div class="title-atmosphere" aria-hidden="true"></div>
+      <main class="title-content">
+        <header class="title-header">
+          <div class="brand-lockup">
+            <div class="brand-mark" aria-hidden="true"><span></span><i></i></div>
+            <div>
+              <p class="eyebrow">YUNLING FLIGHT SIMULATION</p>
+              <h1 id="game-title">云岭航线</h1>
+            </div>
+          </div>
+          <p class="title-subtitle">从冷舱到接地，完成一段专业航线飞行</p>
+        </header>
+
+        <section class="aircraft-picker" aria-labelledby="aircraft-picker-title">
+          <div class="aircraft-picker-heading">
+            <div><span class="section-kicker">AIRCRAFT FLEET</span><h2 id="aircraft-picker-title">选择飞机</h2></div>
+            <div class="aircraft-picker-status"><strong id="aircraft-selection-status">当前：B747-400</strong><span>鼠标选择机型 · 数字键 1 / 2 / 3 仍用于选择情景</span></div>
+          </div>
+          <div class="aircraft-grid">
+            <button class="aircraft-card is-selected" type="button" data-action="aircraft" data-value="b747-400" data-aircraft-card="b747-400" aria-pressed="true">
+              <span class="aircraft-card-top"><span class="aircraft-category">经典四发宽体</span><span class="aircraft-selection-state">当前选中</span></span>
+              <strong>B747-400</strong>
+              <span class="aircraft-engine">CF6-80C2</span>
+              <span class="aircraft-specs"><span><small>长度</small><b>70.6 m</b></span><span><small>翼展</small><b>64.4 m</b></span><span><small>MTOW</small><b>396.9 t</b></span></span>
+              <span class="aircraft-features"><i>四台发动机</i><i>标志性上层甲板</i></span>
+            </button>
+            <button class="aircraft-card" type="button" data-action="aircraft" data-value="b747-8f" data-aircraft-card="b747-8f" aria-pressed="false">
+              <span class="aircraft-card-top"><span class="aircraft-category">加长四发货机</span><span class="aircraft-selection-state">点击选择</span></span>
+              <strong>B747-8F</strong>
+              <span class="aircraft-engine">GEnx-2B67</span>
+              <span class="aircraft-specs"><span><small>长度</small><b>76.3 m</b></span><span><small>翼展</small><b>68.5 m</b></span><span><small>MTOW</small><b>447.7 t</b></span></span>
+              <span class="aircraft-features"><i>四台发动机</i><i>上层甲板 · 货运型</i></span>
+            </button>
+            <button class="aircraft-card aircraft-card-placeholder" type="button" disabled aria-disabled="true">
+              <span class="aircraft-card-top"><span class="aircraft-category">多机型扩展入口</span><span class="aircraft-selection-state">后续扩展</span></span>
+              <strong>轻型直升机 / 其他机型</strong>
+              <span class="aircraft-engine">ROTARY WING · FUTURE FLEET</span>
+              <span class="aircraft-placeholder-copy">预留旋翼机与更多航空器的规格、系统和键位适配能力。</span>
+              <span class="aircraft-features"><i>暂不可选择</i><i>更多机型即将加入</i></span>
+            </button>
+          </div>
+        </section>
+
+        <div class="scenario-heading"><span class="section-kicker">FLIGHT SCENARIOS</span><h2>选择飞行情景</h2></div>
+        <div class="scenario-grid" aria-label="选择飞行情景">
+          <button class="scenario-card scenario-primary" type="button" data-action="start" data-value="cold">
+            <span class="scenario-tag">完整体验</span>
+            <strong>冷舱启动</strong>
+            <span class="scenario-description">从停机位开始，完成通电、APU、引气与四发启动检查单。</span>
+            <span class="scenario-meta"><i>停机位 6</i><i>全流程</i></span>
+            <span class="scenario-cta">开始冷舱准备 <b>→</b></span>
+          </button>
+          <button class="scenario-card" type="button" data-action="start" data-value="takeoff">
+            <span class="scenario-tag">快速起飞</span>
+            <strong>跑道起飞</strong>
+            <span class="scenario-description">四发运转，位于跑道入口。完成起飞、爬升与航线操纵。</span>
+            <span class="scenario-meta"><i>跑道 36</i><i>起飞构型</i></span>
+            <span class="scenario-cta">进入跑道 <b>→</b></span>
+          </button>
+          <button class="scenario-card" type="button" data-action="start" data-value="approach">
+            <span class="scenario-tag">落地挑战</span>
+            <strong>五边进近</strong>
+            <span class="scenario-description">从进近阶段开始，控制能量与下降率，争取平稳接地。</span>
+            <span class="scenario-meta"><i>五边</i><i>着陆构型</i></span>
+            <span class="scenario-cta">开始进近 <b>→</b></span>
+          </button>
+        </div>
+
+        <footer class="title-footer">
+          <span><kbd>W/S</kbd> 俯仰　<kbd>A/D</kbd> 横滚　<kbd>PgUp/PgDn</kbd> 油门　<kbd>Home/End</kbd> 慢车/起飞</span>
+          <div class="title-tools">
+            <button class="button button-quiet" type="button" data-action="continue">继续上次飞行</button>
+            <button class="button button-quiet" type="button" data-action="help">操作帮助 <kbd>H</kbd></button>
+            <button class="button button-quiet" type="button" data-action="settings">飞行设置</button>
+          </div>
+        </footer>
+      </main>
+      <div class="title-version">离线单机版 · CZ3261 · 云岭机场</div>
+    </section>
+
+    <main id="hud" class="screen hud" data-screen="hud" aria-label="主飞行显示" hidden>
+      <header id="top-status" class="top-status glass-panel">
+        <div class="hud-brand">
+          <span class="hud-brand-symbol" aria-hidden="true"></span>
+          <div><strong>CZ3261</strong><small><span id="hud-aircraft-type">B747-400</span> / <span id="hud-aircraft-engine">CF6-80C2</span></small></div>
+        </div>
+        <div class="mission-brief">
+          <span class="section-kicker">当前阶段</span>
+          <strong id="mission-phase">冷舱准备</strong>
+          <span class="mission-divider" aria-hidden="true"></span>
+          <span id="mission-objective-top">接通主电瓶与外部电源</span>
+        </div>
+        <div class="top-chips">
+          <button class="status-chip" id="time-chip" type="button" data-action="timeOfDay" title="切换昼夜"><span>昼夜</span><strong id="time-of-day">白天</strong></button>
+          <button class="status-chip" id="weather-chip" type="button" data-action="weather" title="切换天气"><span>天气</span><strong id="weather-value">晴</strong></button>
+          <button class="status-chip" type="button" data-action="camera" title="切换视角"><span>视角</span><strong id="camera-value">驾驶舱</strong></button>
+          <button class="status-chip keys-chip" id="keys-chip" type="button" data-action="help" title="按键总览（H）"><span>按键</span><strong>总览</strong></button>
+          <button class="pause-button" type="button" data-action="pause" aria-label="暂停游戏"><span aria-hidden="true">Ⅱ</span> 暂停 <kbd>Esc</kbd></button>
+        </div>
+      </header>
+
+      <section id="warning-area" class="warning-area" aria-label="飞行告警" aria-live="assertive" hidden>
+        <div class="warning-item" data-warning-slot hidden><span class="warning-code"></span><strong></strong><small></small></div>
+        <div class="warning-item" data-warning-slot hidden><span class="warning-code"></span><strong></strong><small></small></div>
+        <div class="warning-item" data-warning-slot hidden><span class="warning-code"></span><strong></strong><small></small></div>
+        <div class="warning-item" data-warning-slot hidden><span class="warning-code"></span><strong></strong><small></small></div>
+      </section>
+
+      <aside id="mission-panel" class="glass-panel mission-panel interactive-panel">
+        <div class="panel-heading">
+          <div><span class="section-kicker">FLIGHT DIRECTOR</span><h2 id="checklist-title">冷舱检查单</h2></div>
+          <span id="checklist-progress" class="panel-badge">0 / 19</span>
+        </div>
+        <p id="mission-objective" class="objective-text">接通主电瓶与外部电源</p>
+        <div id="cold-checklist" class="checklist">
+          <button class="check-item" type="button" data-action="battery" data-check="battery"><span class="check-index">01</span><span>主电瓶</span><b>接通</b></button>
+          <button class="check-item" type="button" data-action="externalPower" data-check="externalPower"><span class="check-index">02</span><span>外部电源</span><b>接通</b></button>
+          <button class="check-item" type="button" data-action="avionics" data-check="avionics"><span class="check-index">03</span><span>航空电子</span><b>接通</b></button>
+          <button class="check-item" type="button" data-action="apu" data-check="apu"><span class="check-index">04</span><span>APU</span><b>启动</b></button>
+          <button class="check-item" type="button" data-action="apuBleed" data-check="apuBleed"><span class="check-index">05</span><span>APU 引气</span><b>接通</b></button>
+          <button class="check-item" type="button" data-action="electricPump1" data-check="electricPump1"><span class="check-index">06</span><span>1 号电动泵</span><b>接通</b></button>
+          <button class="check-item" type="button" data-action="electricPump2" data-check="electricPump2"><span class="check-index">07</span><span>2 号电动泵</span><b>接通</b></button>
+          <button class="check-item" type="button" data-action="electricPump3" data-check="electricPump3"><span class="check-index">08</span><span>3 号电动泵</span><b>接通</b></button>
+          <button class="check-item" type="button" data-action="electricPump4" data-check="electricPump4"><span class="check-index">09</span><span>4 号电动泵</span><b>接通</b></button>
+          <button class="check-item" type="button" data-action="packOff" data-check="packOff"><span class="check-index">10</span><span>组件（PACK）</span><b>关闭</b></button>
+          <button class="check-item" type="button" data-action="bleedAir" data-check="bleedAir"><span class="check-index">11</span><span>发动机引气</span><b>接通</b></button>
+          <button class="check-item" type="button" data-action="startEngine1" data-check="startEngine1"><span class="check-index">12</span><span>ENG 1 · 1 号发动机</span><b>启动</b></button>
+          <button class="check-item" type="button" data-action="generator1" data-check="generator1"><span class="check-index">13</span><span>GEN 1 · 1 号发电机</span><b>接通</b></button>
+          <button class="check-item" type="button" data-action="startEngine2" data-check="startEngine2"><span class="check-index">14</span><span>ENG 2 · 2 号发动机</span><b>启动</b></button>
+          <button class="check-item" type="button" data-action="generator2" data-check="generator2"><span class="check-index">15</span><span>GEN 2 · 2 号发电机</span><b>接通</b></button>
+          <button class="check-item" type="button" data-action="startEngine3" data-check="startEngine3"><span class="check-index">16</span><span>ENG 3 · 3 号发动机</span><b>启动</b></button>
+          <button class="check-item" type="button" data-action="generator3" data-check="generator3"><span class="check-index">17</span><span>GEN 3 · 3 号发电机</span><b>接通</b></button>
+          <button class="check-item" type="button" data-action="startEngine4" data-check="startEngine4"><span class="check-index">18</span><span>ENG 4 · 4 号发动机</span><b>启动</b></button>
+          <button class="check-item" type="button" data-action="generator4" data-check="generator4"><span class="check-index">19</span><span>GEN 4 · 4 号发电机</span><b>接通</b></button>
+        </div>
+        <p id="checklist-command-feedback" class="command-feedback" aria-live="polite">点击项目可执行对应操作</p>
+      </aside>
+
+      <section id="airspeed-panel" class="instrument-panel speed-panel" aria-label="空速指示">
+        <div class="instrument-label"><span>空速</span><small>KT</small></div>
+        <canvas id="airspeed-canvas" width="150" height="320" role="img" aria-label="真空速带"></canvas>
+        <div class="instrument-readouts">
+          <div><span>真空速</span><strong id="tas-value">---</strong><small>kt</small></div>
+          <div><span>地速</span><strong id="gs-value">---</strong><small>kt</small></div>
+          <div class="compact-data"><span>马赫 <b id="mach-value">-.--</b></span><span>迎角 <b id="aoa-value">--.-°</b></span><span>载荷 <b id="g-value">-.-- G</b></span></div>
+        </div>
+      </section>
+
+      <section id="altitude-panel" class="instrument-panel altitude-panel" aria-label="高度与垂直速度指示">
+        <div class="instrument-label"><span>气压高度</span><small>FT</small></div>
+        <canvas id="altitude-canvas" width="150" height="320" role="img" aria-label="气压高度与垂直速度带"></canvas>
+        <div class="instrument-readouts">
+          <div><span>气压高度</span><strong id="altitude-value">-----</strong><small>ft</small></div>
+          <div><span>无线电高度</span><strong id="radio-altitude-value">----</strong><small>ft</small></div>
+          <div class="vs-readout"><span>垂直速度</span><strong id="vs-fpm-value">-----</strong><small>fpm</small><b id="vs-ms-value">--.- m/s</b></div>
+        </div>
+      </section>
+
+      <section id="engine-panel" class="glass-panel engine-panel">
+        <div class="panel-heading compact-heading">
+          <div><span class="section-kicker">PROPULSION</span><h2>发动机</h2><span id="engine-aircraft-name" class="engine-aircraft-name">B747-400 / CF6-80C2</span></div>
+          <span id="engine-summary" class="panel-badge">四发关车</span>
+        </div>
+        <div class="engine-table" role="table" aria-label="四台发动机实时参数">
+          <div class="engine-row engine-head" role="row"><span></span><span>N1 <small>%</small></span><span>N2 <small>%</small></span><span>EGT <small>°C</small></span><span>FF <small>kg/h</small></span></div>
+          <div id="engine-rows" class="engine-rows" role="rowgroup"></div>
+        </div>
+        <div class="weight-strip"><span>总重 <strong id="weight-value">--.- t</strong></span><span>机载燃油 <strong id="fuel-value">--.- t</strong></span></div>
+        <div class="throttle-strip">
+          <div class="throttle-readout"><span>油门 THR</span><strong id="throttle-value">慢车 · 0%</strong></div>
+          <div class="throttle-track" aria-hidden="true"><b id="throttle-bar"></b><i class="throttle-mark mark-climb"></i><i class="throttle-mark mark-toga"></i></div>
+          <div class="throttle-buttons">
+            <button type="button" data-action="throttleSet" data-value="0">慢车 <kbd>Home</kbd></button>
+            <button type="button" data-action="throttleDown">减 <kbd>PgDn</kbd></button>
+            <button type="button" data-action="throttleUp">加 <kbd>PgUp</kbd></button>
+            <button type="button" data-action="throttleSet" data-value="0.85">爬升 <kbd>F3</kbd></button>
+            <button type="button" data-action="throttleSet" data-value="1">起飞 <kbd>End</kbd></button>
+          </div>
+        </div>
+        <div class="aircraft-reference"><span>襟翼档位 <strong id="flap-settings">0 / 1 / 5 / 10 / 20 / 25 / 30</strong></span><span>V 速参考 <strong id="v-speed-reference">V1 155 · VR 160 · V2 168 · VAPP 150 / 145 kt</strong></span></div>
+      </section>
+
+      <section id="systems-panel" class="glass-panel systems-panel interactive-panel">
+        <div class="panel-heading compact-heading">
+          <div><span class="section-kicker">AIRCRAFT SYSTEMS</span><h2>构型与系统</h2></div>
+          <span id="configuration-summary" class="panel-badge">地面构型</span>
+        </div>
+        <div class="configuration-grid">
+          <div><span>襟翼</span><strong id="flaps-value">0°</strong></div>
+          <div><span>缝翼</span><strong id="slats-value">收上</strong></div>
+          <div><span>起落架</span><strong id="gear-value">放下锁定</strong></div>
+          <div><span>扰流板</span><strong id="spoilers-value">收上</strong></div>
+          <div><span>停留刹车</span><strong id="parking-brake-value">设置</strong></div>
+          <div><span>反推</span><strong id="reverse-value">收上</strong></div>
+        </div>
+        <div class="system-controls" aria-label="快速系统控制">
+          <button type="button" data-action="flaps" data-value="1" title="增加襟翼">襟翼 +</button>
+          <button type="button" data-action="flaps" data-value="-1" title="减少襟翼">襟翼 −</button>
+          <button type="button" data-action="gear">起落架</button>
+          <button type="button" data-action="spoilers">扰流板</button>
+          <button type="button" data-action="parkingBrake">停留刹车</button>
+          <button type="button" data-action="reverse">反推</button>
+          <button type="button" data-action="packOff">组件关断</button>
+          <button type="button" data-action="antiIce1">ENG1 防冰</button>
+          <button type="button" data-action="antiIce2">ENG2 防冰</button>
+          <button type="button" data-action="antiIce3">ENG3 防冰</button>
+          <button type="button" data-action="antiIce4">ENG4 防冰</button>
+        </div>
+        <div class="wind-line"><span class="wind-arrow" id="wind-arrow" aria-hidden="true">↑</span><span>地面风</span><strong id="wind-value">---° / -- m/s</strong><small id="wind-knots">-- kt</small></div>
+        <div class="key-legend" id="system-key-legend" aria-label="系统按键提示"></div>
+      </section>
+
+      <section id="flight-cluster" class="flight-cluster" aria-label="姿态与航向仪表">
+        <div class="attitude-frame">
+          <div class="instrument-label"><span>姿态 / 飞行路径</span><small>ATT · FPV</small></div>
+          <canvas id="attitude-canvas" width="340" height="184" role="img" aria-label="人工姿态仪与飞行路径符号"></canvas>
+        </div>
+        <div class="heading-frame">
+          <canvas id="heading-canvas" width="360" height="62" role="img" aria-label="航向带"></canvas>
+          <div class="heading-readout">航向 <strong id="heading-value">---°</strong></div>
+        </div>
+      </section>
+
+      <div id="radio-subtitle" class="radio-subtitle" aria-live="polite" hidden>
+        <span class="radio-label"><i aria-hidden="true"></i> 无线电</span>
+        <p id="radio-text"></p>
+      </div>
+
+      <div id="interaction-hint" class="interaction-hint"><span class="hint-dot"></span><span id="interaction-text">点击检查单或按 9 接通主电瓶</span><kbd>H</kbd><span>按键总览</span></div>
+      <div id="toast-stack" class="toast-stack" aria-live="polite" aria-atomic="false"></div>
+    </main>
+
+    <section id="pause-screen" class="overlay" data-overlay="pause" role="dialog" aria-modal="true" aria-labelledby="pause-title" hidden>
+      <div class="modal pause-modal">
+        <p class="eyebrow">SIMULATION PAUSED</p>
+        <h2 id="pause-title">飞行已暂停</h2>
+        <p class="modal-description">模拟计时与飞行动力学已冻结。</p>
+        <div class="modal-actions vertical-actions">
+          <button class="button button-primary" type="button" data-action="resume">继续飞行 <kbd>Esc</kbd></button>
+          <button class="button" type="button" data-action="camera">切换视角 <kbd>C</kbd></button>
+          <button class="button" type="button" data-action="help">查看按键总览 <kbd>H</kbd></button>
+          <button class="button" type="button" data-action="settings">飞行设置</button>
+          <button class="button button-danger-quiet" type="button" data-action="reset">重新开始当前情景</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="help-screen" class="overlay" data-overlay="help" role="dialog" aria-modal="true" aria-labelledby="help-title" hidden>
+      <div class="modal wide-modal">
+        <div class="modal-header"><div><p class="eyebrow">FLIGHT CONTROLS</p><h2 id="help-title">按键总览 · 操作帮助</h2></div><button class="close-button" type="button" data-action="back" aria-label="关闭帮助">×</button></div>
+        <div class="help-layout">
+          <div class="key-groups" id="key-groups" aria-label="全部按键总览"></div>
+          <aside class="flight-tips"><h3>安全飞行提示</h3><ul><li>失速警告出现时，立即减小迎角并增加推力。</li><li>五边保持稳定速度、航向与下降率，避免拉平过晚。</li><li>接地后使用扰流板、反推和机轮刹车，控制滑跑距离。</li><li>红色告警优先于当前任务步骤。</li></ul></aside>
+        </div>
+        <p class="key-overview-note">油门推荐键：<kbd>PageUp</kbd> 加推力、<kbd>PageDown</kbd> 减推力（可按住连续调节），<kbd>Home</kbd>/<kbd>F1</kbd> 慢车、<kbd>End</kbd>/<kbd>F4</kbd> 起飞推力、<kbd>F2</kbd>/<kbd>F3</kbd> 每次 ±5%，也可以直接点 HUD 上的油门按钮。系统键：<kbd>1</kbd>~<kbd>4</kbd> 控制 ENG1~4，<kbd>Alt</kbd>+<kbd>1</kbd>~<kbd>4</kbd> 控制 GEN1~4，<kbd>Numpad 7/8/9/0</kbd> 控制四个电动泵，<kbd>5</kbd> APU、<kbd>6</kbd> APU 引气、<kbd>7</kbd> 发动机引气、<kbd>8</kbd> PACK、<kbd>9</kbd> 电瓶、<kbd>0</kbd> 外部电源、<kbd>\</kbd> 航电；<kbd>K</kbd>/<kbd>J</kbd> 控制 ENG1/2 防冰，<kbd>Numpad 5/6</kbd> 控制 ENG3/4 防冰。<kbd>Shift</kbd>+数字是旧版备用键位，不推荐使用。飞行操纵 W/S 或 ↑/↓、A/D 或 ←/→（地面为前轮转向）、Q/E 脚舵；构型 F/V/G/P/R/Space/X/`,`/`.`；界面 C/Y/Z/U/M/T/H/Esc。标题页 1/2/3 选择情景，机型卡用鼠标选择。鼠标左键在空白处拖动或按住右键拖动可 360° 环视，松开后保持；滚轮向上放大、向下缩小视角（45%～320%），切换视角或重新开始时回正并恢复 100%。</p>
+        <div class="modal-footer"><span>提示：按 H 或点击顶部“按键总览”可随时打开本页</span><button class="button button-primary" type="button" data-action="back">返回</button></div>
+      </div>
+    </section>
+
+    <section id="settings-screen" class="overlay" data-overlay="settings" role="dialog" aria-modal="true" aria-labelledby="settings-title" hidden>
+      <div class="modal settings-modal">
+        <div class="modal-header"><div><p class="eyebrow">SIMULATION SETTINGS</p><h2 id="settings-title">飞行设置</h2></div><button class="close-button" type="button" data-action="back" aria-label="关闭设置">×</button></div>
+        <div class="settings-grid">
+          <label class="setting-row"><span><strong>昼夜</strong><small>切换环境光照</small></span><select id="setting-time" data-action="timeOfDay"><option value="day">白天</option><option value="dusk">黄昏</option><option value="night">夜间</option></select></label>
+          <label class="setting-row"><span><strong>天气</strong><small>影响能见度与气流</small></span><select id="setting-weather" data-action="weather"><option value="clear">晴朗</option><option value="rain">降雨</option><option value="fog">低能见</option><option value="storm">雷雨</option><option value="snow">降雪</option></select></label>
+          <label class="setting-row range-row" data-key="鼠标"><span><strong>风向</strong><small>磁方位，单位：度</small></span><div><input id="setting-wind-direction" data-action="windDirection" type="range" min="0" max="355" step="5" value="180"><output id="wind-direction-output" for="setting-wind-direction">180°</output></div></label>
+          <label class="setting-row range-row" data-key="鼠标"><span><strong>风速</strong><small>地面平均风速</small></span><div><input id="setting-wind-speed" data-action="windSpeed" type="range" min="0" max="25" step="1" value="2"><output id="wind-speed-output" for="setting-wind-speed">2 m/s</output></div></label>
+          <label class="setting-row range-row" data-key="鼠标"><span><strong>主音量</strong><small>发动机、环境与提示音</small></span><div><input id="setting-volume" data-action="volume" type="range" min="0" max="100" step="1" value="80"><output id="volume-output" for="setting-volume">80%</output></div></label>
+          <div class="setting-row"><span><strong>静音</strong><small>保留所有视觉告警</small></span><button id="mute-button" class="toggle-button" type="button" data-action="mute" aria-pressed="false">声音开启</button></div>
+          <label class="setting-row range-row" data-key="鼠标"><span><strong>镜头灵敏度</strong><small>驾驶舱视角跟随速度</small></span><div><input id="setting-sensitivity" data-action="sensitivity" type="range" min="0.2" max="2" step="0.1" value="1"><output id="sensitivity-output" for="setting-sensitivity">1.0×</output></div></label>
+          <div class="setting-row"><span><strong>飞行教程</strong><small>显示阶段提示与操作建议</small></span><button id="tutorial-button" class="toggle-button" type="button" data-action="tutorial" aria-pressed="true">教程开启</button></div>
+        </div>
+        <div class="modal-footer"><span>设置仅在本地模拟器内生效 · 静音 M · 教程 T · 滑杆用鼠标拖动</span><button class="button button-primary" type="button" data-action="back">完成</button></div>
+      </div>
+    </section>
+
+    <section id="results-screen" class="screen results-screen" data-screen="results" aria-labelledby="results-title" hidden>
+      <div class="results-card">
+        <header class="results-header"><div><p class="eyebrow">LANDING REPORT</p><h2 id="results-title">着陆成绩</h2><p id="results-outcome">飞行已完成</p></div><div class="score-ring"><strong id="score-value">--</strong><span>评分</span><b id="score-grade">—</b></div></header>
+        <div class="results-grid">
+          <div><span>接地下降率</span><strong id="result-sink">--- fpm</strong><small id="result-sink-ms">--.- m/s</small></div>
+          <div><span>接地速度</span><strong id="result-speed">--- kt</strong><small>真空速</small></div>
+          <div><span>接地载荷</span><strong id="result-g">-.-- G</strong><small>垂直加速度</small></div>
+          <div><span>接地点</span><strong id="result-position">暂无数据</strong><small>相对跑道入口 / 中线</small></div>
+          <div><span>滑跑距离</span><strong id="result-distance">---- m</strong><small>接地至停止</small></div>
+          <div><span>进近偏差</span><strong id="result-deviation">--.- m</strong><small>平均水平偏差</small></div>
+        </div>
+        <div id="failure-reason" class="failure-reason" hidden><span>失败原因</span><strong id="failure-reason-text">—</strong></div>
+        <p id="results-comment" class="results-comment">完成飞行后，将在此生成着陆评估。</p>
+        <div class="results-actions"><button class="button button-primary" type="button" data-action="reset">再次飞行</button><button class="button" type="button" data-action="start" data-value="approach">重试五边进近</button><button class="button button-quiet" type="button" data-action="start" data-value="cold">返回冷舱</button></div>
+      </div>
+    </section>
+  </div>
+
+  <noscript><div class="noscript-message">需要启用 JavaScript 才能运行云岭航线模拟飞行。</div></noscript>
+</body>
+</html>
